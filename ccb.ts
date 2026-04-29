@@ -53,8 +53,14 @@ function modelTotal(m: ModelBreakdown): number {
 }
 
 function main() {
-  const extra = process.argv.slice(2);
-  const args = ["ccusage", "-b", "--since", "20260421", "--mode", "display", "-j", ...extra];
+  const argv = process.argv.slice(2);
+  let since = "20260421";
+  const sinceIdx = argv.indexOf("--since");
+  if (sinceIdx !== -1 && argv[sinceIdx + 1]) {
+    since = argv[sinceIdx + 1].replace(/-/g, "");
+    argv.splice(sinceIdx, 2);
+  }
+  const args = ["ccusage", "-b", "--since", since, "--mode", "display", "-j", ...argv];
   const result = spawnSync("bunx", args, {
     encoding: "utf-8",
     maxBuffer: 50 * 1024 * 1024,
