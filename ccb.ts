@@ -85,8 +85,14 @@ register("claude", (since, argv) => {
     maxBuffer: 50 * 1024 * 1024,
   });
 
-  if (result.error || result.status !== 0) {
-    return emptyData;
+  if (result.error) {
+    console.error("Failed to run ccusage:", result.error);
+    process.exit(1);
+  }
+  if (result.status !== 0) {
+    console.error("ccusage exited with code", result.status);
+    console.error(result.stderr);
+    process.exit(1);
   }
 
   return JSON.parse(result.stdout);
@@ -154,7 +160,7 @@ register("kimi", (since, _argv) => {
 
 function pick(argv: string[], flag: string): string | null {
   const i = argv.indexOf(flag);
-  if (i === -1 || !argv[i + 1]) return null;
+  if (i === -1 || !argv[i + 1] || argv[i + 1].startsWith("--")) return null;
   const v = argv[i + 1];
   argv.splice(i, 2);
   return v;
@@ -169,8 +175,8 @@ function main() {
   const data = resolve(source)(since, argv);
 
   if (data.daily.length === 0) {
-    console.log(`No usage data available for source: ${source}`);
-    process.exit(0);
+    console.error(`No usage data available for source: ${source}`);
+    process.exit(1);
   }
 
   // Terminal summary

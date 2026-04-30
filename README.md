@@ -31,14 +31,18 @@ ccb
 ## 使用
 
 ```bash
-# 默认：查看 2026-04-21 至今的用量
+# 默认：查看 Claude Code 2026-04-21 至今的用量
 ccb
+
+# 指定数据源（claude / kimi）
+ccb --source kimi
+ccb --source kimi --since 2026-04-25
 
 # 指定起始日期
 ccb --since 2026-04-25
 ccb --since 2026-04-01
 
-# 传递额外 ccusage 参数
+# 传递额外 ccusage 参数（仅 claude 模式有效）
 ccb --user myuser
 ccb --project /path/to/project
 ```
